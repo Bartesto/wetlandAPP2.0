@@ -110,6 +110,12 @@ shinyServer(function(input, output) {
     predPlotInput()
   })
   
+  output$textpds <- renderText({
+    dfpred <- dfpredb5(input$wland)
+    paste0("Number of predicted depths for ", input$wland, ": ",
+           length(na.omit(dfpred[,2])))
+  })
+  
   output$textfd <- renderText({
     dfpred <- dfpredb5(input$wland)
     paste0("First date of satellite data: ", format(head(dfpred[,1], n=1),
