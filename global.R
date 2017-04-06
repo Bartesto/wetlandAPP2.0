@@ -86,7 +86,7 @@ dfpredhist <- function(x){
   idh <- match(x, dnames)#find hdepth data
   hist <- hDepth[,c(1,idh)]
   hist <- hist[complete.cases(hist),]
-  names(hist) <- c("DATE", "depth")
+  names(hist) <- c("DATE", "value")
   return(hist)
   
 }
@@ -153,16 +153,60 @@ pData <- function(df, model, modtype){
   if(modtype == 1){
     model <- model
     predexp <- exp(predict(model, data.frame(b5 = df$b5)))
-    b5modelled <- data.frame(DATE = df$DATE, b5 = df$b5, prediction = predexp)
+    b5modelled <- data.frame(DATE = df$DATE, b5 = df$b5, value = predexp)
     return(b5modelled)
   } else {
     model <- model
     pred <- predict(model, data.frame(b5 = df$b5))
-    b5modelled <- data.frame(DATE = df$DATE, b5 = df$b5, prediction = pred)
+    b5modelled <- data.frame(DATE = df$DATE, b5 = df$b5, value = pred)
     b5modelled$prediction[b5modelled$prediction < 0] <- 0
     return(b5modelled)
   }
   
+}
+
+# Function to create predicted df based on days between observations to produce
+# gaps in line plots
+segmentdf <- function(x, option){
+  if(option == 1){
+    diffdf <- x%>%
+      mutate(diff = as.numeric(DATE - lag(DATE)))%>%
+      mutate(diff1 = ifelse(diff <= 60 , "s", "n"))
+    
+    NAdates <- diffdf$DATE[diffdf$diff1 == "n" | is.na(diffdf$diff1)] - 1
+    NAdf <- data.frame(DATE = NAdates)
+    
+    segdf <- full_join(diffdf, NAdf, by = "DATE")%>%
+      arrange(DATE)%>%
+      select(-b5, -diff, -diff1)
+    return(segdf)
+    
+  } else if (option == 2) {
+    diffdf <- x%>%
+      mutate(diff = as.numeric(DATE - lag(DATE)))%>%
+      mutate(diff1 = ifelse(diff > 60 & diff <= 70 , "s", "n"))
+    
+    NAdates <- diffdf$DATE[diffdf$diff1 == "n" | is.na(diffdf$diff1)] - 1
+    NAdf <- data.frame(DATE = NAdates)
+    
+    segdf <- full_join(diffdf, NAdf, by = "DATE")%>%
+      arrange(DATE)%>%
+      select(-b5, -diff, -diff1)
+    return(segdf)
+    
+  } else {
+    diffdf <- x%>%
+      mutate(diff = as.numeric(DATE - lag(DATE)))%>%
+      mutate(diff1 = ifelse(diff > 70 &diff <= 80 , "s", "n"))
+    
+    NAdates <- diffdf$DATE[diffdf$diff1 == "n" | is.na(diffdf$diff1)] - 1
+    NAdf <- data.frame(DATE = NAdates)
+    
+    segdf <- full_join(diffdf, NAdf, by = "DATE")%>%
+      arrange(DATE)%>%
+      select(-b5, -diff, -diff1)
+    return(segdf)
+  }
 }
 
 # Function to create csv export header
