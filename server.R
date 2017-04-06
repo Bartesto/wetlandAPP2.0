@@ -71,18 +71,24 @@ shinyServer(function(input, output) {
     b5modelled <- pData(b5.i, model, input$mod)
     modname <- ifelse(input$mod == 1, "log-model", "linear-model")
     
-    ggplot()+
-      geom_point(data = hDepth.i,
-                 aes(x = DATE,  y = depth, colour = 'measured\ndepth'),
-                 size = 2, shape = 3)+
-      geom_point(data = b5modelled, aes(x = DATE, y = prediction, colour='model'))+
-      geom_line(data = b5modelled, aes(x = DATE, y = prediction, colour = 'model'))+
+    dfplot60 <- segmentdf(b5modelled, 1)
+    dfplot70 <- segmentdf(b5modelled, 2)
+    dfplot80 <- segmentdf(b5modelled, 3)
+    
+    ggplot(dfplot60, aes(x = DATE, y = value))+
+      geom_point(aes(colour = "Colour1"))+
+      geom_point(data = hDepth.i, aes(colour = "Colour2"), shape = 3, size = 2.5)+
+      geom_line(linetype = "solid", aes(colour = "Colour3"))+
+      geom_line(data = dfplot70, aes(colour = "Colour4"), linetype = "dashed")+
+      geom_line(data = dfplot80, aes(colour = "Colour5"), linetype = "dotted")+
       scale_x_date(date_breaks = "1 year", date_labels = "%Y")+
-      guides(colour = guide_legend(override.aes = list(shape = c(16, 3))))+
-      scale_colour_manual(values = c('red', 'blue'),
-                          name = '',
-                          breaks = c( 'model', 'measured\ndepth'),
-                          labels = c('modelled', 'measured'))+
+      scale_colour_manual(values = c( "blue", "red", "blue", "blue", "blue"),
+                          guide = guide_legend(override.aes = list(
+                            linetype = c(0, 0, 1, 2, 3),
+                            shape = c(16, 3, NA, NA, NA))),
+                          labels = c('predicted','actual', '<= 60 days', '61-70 days', 
+                                     '71-80 days'),
+                          name = "")+
       theme_bw()+
       ggtitle(paste0(input$wland, ' predictions ', modname, 
                      "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
