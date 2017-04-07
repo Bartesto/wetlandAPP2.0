@@ -25,7 +25,6 @@ shinyUI(fluidPage(
                                   "Linear Model (neg values zeroed)" = 2),
                    selected = 1),
       downloadButton('downloadModPlot', 'Model Plot'),
-      downloadButton('downloadPredPlot', 'Predictions Plot'),
       downloadButton('downloadData', 'Predictions Data'),
       br(),
       br(),
