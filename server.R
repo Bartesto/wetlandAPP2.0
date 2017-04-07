@@ -75,31 +75,38 @@ shinyServer(function(input, output) {
     dfplot70 <- segmentdf(b5modelled, 2)
     dfplot80 <- segmentdf(b5modelled, 3)
     
-    ggplot(dfplot60, aes(x = DATE, y = value))+
-      geom_point(aes(colour = "Colour1"))+
-      geom_point(data = hDepth.i, aes(colour = "Colour2"), shape = 3, size = 2.5)+
-      geom_line(linetype = "solid", aes(colour = "Colour3"))+
-      geom_line(data = dfplot70, aes(colour = "Colour4"), linetype = "dashed")+
-      geom_line(data = dfplot80, aes(colour = "Colour5"), linetype = "dotted")+
-      scale_x_date(date_breaks = "1 year", date_labels = "%Y")+
-      scale_colour_manual(values = c( "blue", "red", "blue", "blue", "blue"),
-                          guide = guide_legend(override.aes = list(
-                            linetype = c(0, 0, 1, 2, 3),
-                            shape = c(16, 3, NA, NA, NA))),
-                          labels = c('predicted','actual', '<= 60 days', '61-70 days', 
-                                     '71-80 days'),
-                          name = "")+
-      theme_bw()+
-      ggtitle(paste0(input$wland, ' predictions ', modname, 
-                     "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
-      theme(plot.title = element_text(size = 13, face = 'bold', hjust = 0),
-            axis.text.x = element_text(angle = 90, vjust=0.5),
-            legend.position = "bottom")+
-      ylab('Depth (m)')+
-      xlab('Date')
+    ggplotly(ggplot(dfplot60, aes(x = DATE, y = value))+
+               geom_point(aes(colour = "Predicted"))+
+               geom_point(data = hDepth.i, aes(colour = "Measured"), shape = 3, 
+                          size = 2.5)+
+               geom_line(linetype = "solid", aes(colour = "<= 60 days"))+
+               geom_line(data = dfplot70, aes(colour = "61-70 days"), 
+                         linetype = "dashed")+
+               geom_line(data = dfplot80, aes(colour = "71-80 days"), 
+                         linetype = "dotted")+
+               scale_x_date(date_breaks = "1 year", date_labels = "%Y")+
+               scale_colour_manual(values = c( "#336699", "#336699", "#336699", 
+                                               "red", "#336699"),
+                                   guide = guide_legend(override.aes = list(
+                                     linetype = c(0, 0, 1, 2, 3),
+                                     shape = c(16, 3, NA, NA, NA))),
+                                   labels = c('predicted','actual', '<= 60 days', 
+                                              '61-70 days',
+                                              '71-80 days'),
+                                   name = "")+
+               theme_bw()+
+               ggtitle(paste0(input$wland, ' predictions ', modname,
+                              "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
+               theme(plot.title = element_text(size = 13, face = 'bold', 
+                                               hjust = 0),
+                     axis.text.x = element_text(angle = 90, vjust=0.5),
+                     legend.position = "bottom")+
+               ylab('Depth (m)')+
+               xlab('Date'))
+    
   }
 
-  output$pred <- renderPlot({
+  output$pred <- renderPlotly({
     
     #validation test and error message
     validate(
