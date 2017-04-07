@@ -57,7 +57,7 @@ shinyUI(fluidPage(
       tableOutput("modsum"),
       br(),
       br(),
-      plotOutput("pred"),
+      plotlyOutput("pred"),
       textOutput("textpds"),
       br(),
       br(),
