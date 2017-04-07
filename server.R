@@ -105,14 +105,16 @@ shinyServer(function(input, output) {
                xlab('Date')
    p2 <- ggplotly(p, tooltip = c("DATE", "value"))
     
-    for(i in 1:length(p2$x$data[[1]]$text)){
-      for(j in 1:5){
-        out <- substr(p2$x$data[[j]]$text[i], 6, 16)
-        pin <- format(as.Date(substr(p2$x$data[[j]]$text[i], 6, 16)), " %d-%m-%Y")
-        p2$x$data[[j]]$text[i] <- gsub(pattern = out,
-                                       replacement = pin, p2$x$data[[j]]$text[i])
-      }
-    }
+   for(i in 1:5){
+     for(j in 1:length(p2$x$data[[i]]$text)){
+       out <- substr(p2$x$data[[i]]$text[j], 6, 16)
+       date <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %d-%m-%Y")
+       jul <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %j")
+       info <- paste0(date, "<br>", "JULIAN: ", jul)
+       p2$x$data[[i]]$text[j] <- gsub(pattern = out, 
+                                      replacement = info, p2$x$data[[i]]$text[j])
+     }
+   }
    p2
     
   }
