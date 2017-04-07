@@ -107,12 +107,18 @@ shinyServer(function(input, output) {
     
    for(i in 1:5){
      for(j in 1:length(p2$x$data[[i]]$text)){
+       #date and julian day
        out <- substr(p2$x$data[[i]]$text[j], 6, 16)
        date <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %d-%m-%Y")
        jul <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %j")
-       info <- paste0(date, "<br>", "JULIAN: ", jul)
+       info <- paste0(date, "<br>", "JULIAN:", jul)
        p2$x$data[[i]]$text[j] <- gsub(pattern = out, 
                                       replacement = info, p2$x$data[[i]]$text[j])
+       #depth (m)
+       out2 <- substr(p2$x$data[[i]]$text[j], 36, 40)
+       din <- "Depth(m)"
+       p2$x$data[[i]]$text[j] <- gsub(pattern = out2, 
+                                      replacement = din, p2$x$data[[i]]$text[j])
      }
    }
    p2
