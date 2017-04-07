@@ -170,17 +170,7 @@ shinyServer(function(input, output) {
              height = 10, units = 'cm')
     }
   )
-  #PREDICTIONS
-  output$downloadPredPlot <- downloadHandler(
-    filename = function() {
-      modname <- ifelse(input$mod == 1, "log-model-", "linear-model-")
-      paste(input$wland, '-Pred-', modname, Sys.Date(), '.jpeg', sep = '') 
-    },
-    content = function(file) {
-      ggsave(file, plot = predPlotInput(), width = 15, 
-             height = 10, units = 'cm')
-    }
-  )
+
   #PREDICTIONS DATA
   output$downloadData <- downloadHandler(
     filename = function() {
