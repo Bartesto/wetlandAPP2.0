@@ -75,7 +75,7 @@ shinyServer(function(input, output) {
     dfplot70 <- segmentdf(b5modelled, 2)
     dfplot80 <- segmentdf(b5modelled, 3)
     
-    ggplotly(ggplot(dfplot60, aes(x = DATE, y = value))+
+    p <- ggplot(dfplot60, aes(x = DATE, y = value))+
                geom_point(aes(colour = "Predicted"))+
                geom_point(data = hDepth.i, aes(colour = "Measured"), shape = 3, 
                           size = 2.5)+
@@ -102,7 +102,18 @@ shinyServer(function(input, output) {
                      axis.text.x = element_text(angle = 90, vjust=0.5),
                      legend.position = "bottom")+
                ylab('Depth (m)')+
-               xlab('Date'))
+               xlab('Date')
+   p2 <- ggplotly(p, tooltip = c("DATE", "value"))
+    
+    for(i in 1:length(p2$x$data[[1]]$text)){
+      for(j in 1:5){
+        out <- substr(p2$x$data[[j]]$text[i], 6, 16)
+        pin <- format(as.Date(substr(p2$x$data[[j]]$text[i], 6, 16)), " %d-%m-%Y")
+        p2$x$data[[j]]$text[i] <- gsub(pattern = out,
+                                       replacement = pin, p2$x$data[[j]]$text[i])
+      }
+    }
+   p2
     
   }
 
