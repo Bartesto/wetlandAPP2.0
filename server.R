@@ -150,7 +150,7 @@ shinyServer(function(input, output) {
       scale_x_date(date_breaks = "1 year", date_labels = "%Y",
                    limits = as.Date(c("1987-01-01", "2017-01-01")),
                    expand=c(0.007,1)) +
-      scale_fill_manual(values = "blue", name = "")+
+      scale_fill_manual(values = "#006699", name = "")+
       theme_bw() +
       labs(x = "Date", y = "Rain (mm)",
            caption = "Bureau of Meteorology")+
@@ -159,22 +159,19 @@ shinyServer(function(input, output) {
             axis.text.x = element_text(angle = 90, vjust=0.5))
     p2 <- ggplotly(p, tooltip = c("DATE", "mm"))
     
-    # for(i in 1:5){
-    #   for(j in 1:length(p2$x$data[[i]]$text)){
-    #     #date and julian day
-    #     out <- substr(p2$x$data[[i]]$text[j], 6, 16)
-    #     date <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %d-%m-%Y")
-    #     jul <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %j")
-    #     info <- paste0(date, "<br>", "JULIAN:", jul)
-    #     p2$x$data[[i]]$text[j] <- gsub(pattern = out, 
-    #                                    replacement = info, p2$x$data[[i]]$text[j])
-    #     #depth (m)
-    #     out2 <- substr(p2$x$data[[i]]$text[j], 36, 40)
-    #     din <- "Depth(m)"
-    #     p2$x$data[[i]]$text[j] <- gsub(pattern = out2, 
-    #                                    replacement = din, p2$x$data[[i]]$text[j])
-    #   }
-    # }
+    for(j in 1:length(p2$x$data[[1]]$text)){
+      #date and julian day
+      out <- substr(p2$x$data[[1]]$text[j], 6, 16)
+      date <- format(as.Date(substr(p2$x$data[[1]]$text[j], 6, 16)), " %d-%m-%Y")
+      jul <- format(as.Date(substr(p2$x$data[[1]]$text[j], 6, 16)), " %j")
+      info <- paste0(date, "<br>", "JULIAN:", jul)
+      p2$x$data[[1]]$text[j] <- gsub(pattern = out,
+                                     replacement = info, p2$x$data[[1]]$text[j])
+      #adjust mm heading
+      p2$x$data[[1]]$text[j] <- gsub(pattern = "mm",
+                                     replacement = "Mthly (mm)", 
+                                     p2$x$data[[1]]$text[j])
+    }
     p2
     
   }
@@ -190,6 +187,43 @@ shinyServer(function(input, output) {
     BoMmthlyPlotInput()
   })
   
+  BoMannPlotInput <- function(){
+    Bdfann <- BoMdfannual(input$wland)
+    
+    
+    p <- ggplot(Bdfann)+
+      geom_bar(aes(x = as.factor(year), y = annual, fill = "Interpolated"), 
+               stat = "identity") +#as.factor(year)
+      theme_bw() +
+      scale_fill_manual(values = "#006699", name = "")+
+      labs(x = "Date", y = "Rain (mm)",
+           caption = "Bureau of Meteorology")+
+      ggtitle("Annual Interpolated Rainfall")+
+      theme(plot.title = element_text(size = 13, face = 'bold', hjust = 0),
+            axis.text.x = element_text(angle = 90, vjust=0.5))
+    
+    p2 <- ggplotly(p, tooltip = c("as.factor(year)", "annual"))
+    
+    for(j in 1:length(p2$x$data[[1]]$text)){
+      year <- substr(p2$x$data[[1]]$text[j], 18, 21)
+      mm <- substr(p2$x$data[[1]]$text[j], 34,40)
+      info <- paste0("YEAR: ", year, "<br>", "Annual (mm): ", mm)
+      p2$x$data[[1]]$text[j] <- info
+    }
+    p2
+    
+  }
+  
+  output$BoMann <- renderPlotly({
+    
+    #validation test and error message
+    validate(
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+    )
+    
+    #predictions plot
+    BoMannPlotInput()
+  })
   
   
   output$textpds <- renderText({
