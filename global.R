@@ -15,7 +15,8 @@ load_or_install<-function(package_names)
   }  
 }  
 
-load_or_install(c("shiny", "ggplot2", "broom", "dplyr", "lubridate", "plotly"))
+load_or_install(c("shiny", "shinyjs", "ggplot2", "broom", "dplyr", "lubridate", 
+                  "plotly"))
                  
 
 ## GENERAL FUNCTIONS
