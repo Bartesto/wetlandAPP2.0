@@ -33,7 +33,7 @@ shinyServer(function(input, output) {
       ggtitle(paste0(input$wland, " ", modname,
                      "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
       theme(plot.title = element_text(size = 13, face = "bold", hjust = 0))+
-      xlab('shortwave infrared (DN)')+
+      xlab('shortwave infrared (Digital Number)')+
       ylab('Depth (m)')
     
   }
@@ -60,7 +60,9 @@ shinyServer(function(input, output) {
     #make table
     df <- df2model(input$wland, input$daydiff, input$thresh)
     model <- mod(df, input$mod)
-    glance(model)},include.rownames = FALSE)
+    tabdf <- glance(model)
+    tabdf$n <- tabdf$df + tabdf$df.residual
+    tabdf},include.rownames = FALSE)
   
   #Predictions Plot
   predPlotInput <- function(){
@@ -135,6 +137,59 @@ shinyServer(function(input, output) {
     #predictions plot
     predPlotInput()
   })
+
+  
+  ### BoM
+  #Predictions Plot
+  BoMmthlyPlotInput <- function(){
+    Bdfmthly <- BoMdfmthly(input$wland)
+    
+    
+    p <- ggplot(df)+
+      geom_bar(aes(x = DATE, y = mm), stat = "identity", fill = "blue")+
+      scale_x_date(date_breaks = "1 year", date_labels = "%Y",
+                   limits = as.Date(c("1987-01-01", "2017-01-01")),
+                   expand=c(0.007,1)) +
+      theme_bw() +
+      labs(x = "Date", y = "Rain (mm)",
+           caption = "Bureau of Meteorology")+
+      ggtitle("Monthly Interpolated Rainfall")+
+      theme(plot.title = element_text(size = 13, face = 'bold', hjust = 0),
+            axis.text.x = element_text(angle = 90, vjust=0.5))
+    p2 <- ggplotly(p, tooltip = c("DATE", "value"))
+    
+    # for(i in 1:5){
+    #   for(j in 1:length(p2$x$data[[i]]$text)){
+    #     #date and julian day
+    #     out <- substr(p2$x$data[[i]]$text[j], 6, 16)
+    #     date <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %d-%m-%Y")
+    #     jul <- format(as.Date(substr(p2$x$data[[i]]$text[j], 6, 16)), " %j")
+    #     info <- paste0(date, "<br>", "JULIAN:", jul)
+    #     p2$x$data[[i]]$text[j] <- gsub(pattern = out, 
+    #                                    replacement = info, p2$x$data[[i]]$text[j])
+    #     #depth (m)
+    #     out2 <- substr(p2$x$data[[i]]$text[j], 36, 40)
+    #     din <- "Depth(m)"
+    #     p2$x$data[[i]]$text[j] <- gsub(pattern = out2, 
+    #                                    replacement = din, p2$x$data[[i]]$text[j])
+    #   }
+    # }
+    p2
+    
+  }
+  
+  output$BoMmthly <- renderPlotly({
+    
+    #validation test and error message
+    validate(
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+    )
+    
+    #predictions plot
+    BoMmthlyPlotInput()
+  })
+  
+  
   
   output$textpds <- renderText({
     dfpred <- dfpredb5(input$wland)
