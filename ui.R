@@ -58,15 +58,10 @@ shinyUI(fluidPage(
       br(),
       plotlyOutput("pred"),
       textOutput("textpds"),
-      br(),
-      br(),
-      h4("Data Info"),
       textOutput("textfd"),
       textOutput("textld"),
-      textOutput("textsc"),
-      plotlyOutput("BoMmthly")
-      # br(),
-      # plotlyOutput("BoMann")
+      plotlyOutput("BoMmthly"),
+      plotlyOutput("BoMann")
     )
   )
 )
