@@ -7,7 +7,8 @@ library(plotly)
 # Define UI for application
 shinyUI(fluidPage(
   #theme = shinytheme("paper"),
-  titlePanel(("SWWMP Modeller")),
+  useShinyjs(),
+  titlePanel("SWWMP Modeller"),
   sidebarLayout(
     sidebarPanel(
       h3("Model a wetland's depth using USGS Landsat shortwave infrared data"),
@@ -33,16 +34,24 @@ shinyUI(fluidPage(
                historical archive for each wetland available in the dropdown list 
                above. These values are then matched with depth measurements 
                obtained from field visits. A choice of either logarithmic or linear 
-               model is then used to model wetland depth."),
+               model is then used to model wetland depth and produce predicted depths."),
+      h4("The Modelling Tab"),
       helpText("There are two variables available for adjustment to improve model 
                fit. 'Days difference' refers to the number of days allowed between
                a depth measurement in the field and available satellite data. 
                'Error threshold (m)' refers to allowable measurement error from 
                the field data. Adjusting these variables may improve the model 
-               fit which can be guaged by the plot and model summary table. When 
-               happy with the model use the 'Download' buttons to access the data.
-               To be able to choose a download location you might have to alter your 
-               browser settings."),
+               fit which can be guaged by the plot and model summary table. When
+               happy with the model use the 'Download' button to access the data.
+               The plots can be downloaded as well by using the 'camera' icon when 
+               interacting with the plot. To be able to choose a download location 
+               you might have to alter your browser settings."),
+      h4("The Predictions Tab"),
+      helpText("If using the APP to estimate depths in the absence of field data,
+               this tab can help. By zooming all plots to a period of interest,
+               the predicted hydroperiods can be examined in context with monthly 
+               and annual rainfall. Rainfall measurements come from a monthly interpolated
+               dataset downloaded from the Australian Bureau of Meteorology"),
       br(),
       br(),
       br(),
@@ -52,18 +61,24 @@ shinyUI(fluidPage(
     ),
     
     mainPanel(
-      plotOutput("mod"),
-      tableOutput("modsum"),
-      br(),
-      br(),
-      plotlyOutput("pred"),
-      textOutput("textpds"),
-      textOutput("textfd"),
-      textOutput("textld"),
-      plotlyOutput("BoMmthly"),
-      plotlyOutput("BoMann")
+      tabsetPanel(type = "tabs",
+                  tabPanel("Modelling", 
+                           plotOutput("mod"),
+                           tableOutput("modsum"),
+                           br(),
+                           br(),
+                           plotlyOutput("pred1"),
+                           textOutput("textpds"),
+                           textOutput("textfd"),
+                           textOutput("textld")),
+                  tabPanel("Predictions", 
+                           plotlyOutput("pred2"),
+                           plotlyOutput("BoMmthly"),
+                           actionButton("hide1", "Hide Monthly"),
+                           plotlyOutput("BoMann"),
+                           actionButton("hide2", "Hide Annual"))
+                  )
     )
   )
 )
 )
-
