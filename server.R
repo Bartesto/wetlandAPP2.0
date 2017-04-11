@@ -145,18 +145,19 @@ shinyServer(function(input, output) {
     Bdfmthly <- BoMdfmthly(input$wland)
     
     
-    p <- ggplot(df)+
-      geom_bar(aes(x = DATE, y = mm), stat = "identity", fill = "blue")+
+    p <- ggplot(Bdfmthly)+
+      geom_bar(aes(x = DATE, y = mm, fill = "Interpolated"), stat = "identity")+
       scale_x_date(date_breaks = "1 year", date_labels = "%Y",
                    limits = as.Date(c("1987-01-01", "2017-01-01")),
                    expand=c(0.007,1)) +
+      scale_fill_manual(values = "blue", name = "")+
       theme_bw() +
       labs(x = "Date", y = "Rain (mm)",
            caption = "Bureau of Meteorology")+
       ggtitle("Monthly Interpolated Rainfall")+
       theme(plot.title = element_text(size = 13, face = 'bold', hjust = 0),
             axis.text.x = element_text(angle = 90, vjust=0.5))
-    p2 <- ggplotly(p, tooltip = c("DATE", "value"))
+    p2 <- ggplotly(p, tooltip = c("DATE", "mm"))
     
     # for(i in 1:5){
     #   for(j in 1:length(p2$x$data[[i]]$text)){
