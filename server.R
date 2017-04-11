@@ -1,4 +1,5 @@
 library(shiny)
+library(shinyjs)
 library(dplyr)
 library(ggplot2)
 library(broom)
@@ -64,7 +65,7 @@ shinyServer(function(input, output) {
     tabdf$n <- tabdf$df + tabdf$df.residual
     tabdf},include.rownames = FALSE)
   
-  #Predictions Plot
+  #Predictions Plot for first tab
   predPlotInput <- function(){
     df <- df2model(input$wland, input$daydiff, input$thresh)
     model <- mod(df, input$mod)
@@ -127,7 +128,8 @@ shinyServer(function(input, output) {
     
   }
 
-  output$pred <- renderPlotly({
+  #Output for for first tab
+  output$pred1 <- renderPlotly({
     
     #validation test and error message
     validate(
@@ -138,6 +140,17 @@ shinyServer(function(input, output) {
     predPlotInput()
   })
 
+  #Output for for second tab
+  output$pred2 <- renderPlotly({
+    
+    #validation test and error message
+    validate(
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+    )
+    
+    #predictions plot
+    predPlotInput()
+  })
   
   ### BoM
   #Predictions Plot
@@ -162,7 +175,7 @@ shinyServer(function(input, output) {
     for(j in 1:length(p2$x$data[[1]]$text)){
       #date and julian day
       out <- substr(p2$x$data[[1]]$text[j], 6, 16)
-      date <- format(as.Date(substr(p2$x$data[[1]]$text[j], 6, 16)), " %d-%m-%Y")
+      date <- format(as.Date(substr(p2$x$data[[1]]$text[j], 6, 16)), " %b-%Y")
       jul <- format(as.Date(substr(p2$x$data[[1]]$text[j], 6, 16)), " %j")
       info <- paste0(date, "<br>", "JULIAN:", jul)
       p2$x$data[[1]]$text[j] <- gsub(pattern = out,
@@ -185,6 +198,10 @@ shinyServer(function(input, output) {
     
     #predictions plot
     BoMmthlyPlotInput()
+  })
+   #Toggle hide button for Mthly
+  observeEvent(input$hide1, {
+    toggle("BoMmthly")
   })
   
   BoMannPlotInput <- function(){
@@ -225,6 +242,10 @@ shinyServer(function(input, output) {
     BoMannPlotInput()
   })
   
+  #Toggle hide button for Annual
+  observeEvent(input$hide2, {
+    toggle("BoMann")
+  }) 
   
   output$textpds <- renderText({
     dfpred <- dfpredb5(input$wland)
