@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
   
   #Reactive data frame to test if enough data to model
   df <- reactive({
-    df2model(input$wland, input$daydiff, input$thresh)
+    df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
     
   })
   output$numwlands <- renderText({
@@ -32,7 +32,8 @@ shinyServer(function(input, output) {
       geom_ribbon(data = modData, aes(x = X1, ymax = ub, ymin = lb ), alpha = 0.2)+
       theme_bw()+
       ggtitle(paste0(input$wland, " ", modname,
-                     "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
+                     "  (DD:", input$daydiff, "  UT:", input$Uthresh, 
+                     "  LT:", input$Lthresh,")"))+
       theme(plot.title = element_text(size = 13, face = "bold", hjust = 0))+
       xlab('shortwave infrared (Digital Number)')+
       ylab('Depth (m)')
@@ -59,15 +60,15 @@ shinyServer(function(input, output) {
     )
     
     #make table
-    df <- df2model(input$wland, input$daydiff, input$thresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
     model <- mod(df, input$mod)
     tabdf <- glance(model)
     tabdf$n <- tabdf$df + tabdf$df.residual
     tabdf},include.rownames = FALSE)
   
-  #Predictions Plot for first tab
+  #Predictions Plot for both tabs - sep ids below
   predPlotInput <- function(){
-    df <- df2model(input$wland, input$daydiff, input$thresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
     model <- mod(df, input$mod)
     hDepth.i <- dfpredhist(input$wland)
     b5.i <- dfpredb5(input$wland)
@@ -99,7 +100,8 @@ shinyServer(function(input, output) {
                                    name = "")+
                theme_bw()+
                ggtitle(paste0(input$wland, ' predictions ', modname,
-                              "  (Dd:", input$daydiff, "  Et:", input$thresh, ")"))+
+                              "  (DD:", input$daydiff, "  UT:", input$Uthresh, 
+                              "  LT:", input$Lthresh,")"))+
                theme(plot.title = element_text(size = 13, face = 'bold', 
                                                hjust = 0),
                      axis.text.x = element_text(angle = 90, vjust=0.5),
@@ -273,14 +275,14 @@ shinyServer(function(input, output) {
   
   #Data for export
   datasetInput1 <- function(){
-    df <- df2model(input$wland, input$daydiff, input$thresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
     model <- mod(df, input$mod)
-    head <- csvHead(model, input$daydiff, input$thresh)
+    head <- csvHead(model, input$daydiff, input$Uthresh, input$Lthresh)
     return(head)
   }
   
   datasetInput2 <- function(){
-    df <- df2model(input$wland, input$daydiff, input$thresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
     model <- mod(df, input$mod)
     hDepth.i <- dfpredhist(input$wland)
     b5.i <- dfpredb5(input$wland)
