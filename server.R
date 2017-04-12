@@ -26,17 +26,6 @@ shinyServer(function(input, output) {
     modData <- mData(df, model, input$mod)
     modname <- ifelse(input$mod == 1, "log-model", "linear-model")
     
-    # ggplot()+
-    #   geom_point(data = df, aes_string(x = 'b5', y = 'depth.i'))+
-    #   geom_line(data = modData, aes(x = X1, y = pred), col = 'red', size = 1)+
-    #   geom_ribbon(data = modData, aes(x = X1, ymax = ub, ymin = lb ), alpha = 0.2)+
-    #   theme_bw()+
-    #   ggtitle(paste0(input$wland, " ", modname,
-    #                  "  (DD:", input$daydiff, "  UT:", input$Uthresh, 
-    #                  "  LT:", input$Lthresh,")"))+
-    #   theme(plot.title = element_text(size = 13, face = "bold", hjust = 0))+
-    #   xlab('shortwave infrared (Digital Number)')+
-    #   ylab('Depth (m)')
     p <- ggplot()+
       geom_point(data = df, aes_string(x = 'b5', y = 'depth.i', colour = shQuote("Data")))+
       geom_line(data = modData, aes(x = X1, y = pred, colour = 'Model'), size = 1)+
