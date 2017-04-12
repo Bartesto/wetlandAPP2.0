@@ -336,18 +336,7 @@ shinyServer(function(input, output) {
     return(b5modelled)
   }
   
-  ##Download Buttons
-  #MODEL
-  output$downloadModPlot <- downloadHandler(
-    filename = function() {
-      modname <- ifelse(input$mod == 1, "log-model-", "linear-model-")
-      paste(input$wland, '-Mod-', modname, Sys.Date(), '.jpeg', sep = '') 
-    },
-    content = function(file) {
-      ggsave(file, plot = modPlotInput(), width = 15, 
-             height = 10, units = 'cm')
-    }
-  )
+  ##Download Button
 
   #PREDICTIONS DATA
   output$downloadData <- downloadHandler(
