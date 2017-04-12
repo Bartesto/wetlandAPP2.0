@@ -26,21 +26,67 @@ shinyServer(function(input, output) {
     modData <- mData(df, model, input$mod)
     modname <- ifelse(input$mod == 1, "log-model", "linear-model")
     
-    ggplot()+
-      geom_point(data = df, aes_string(x = 'b5', y = 'depth.i'))+
-      geom_line(data = modData, aes(x = X1, y = pred), col = 'red', size = 1)+
-      geom_ribbon(data = modData, aes(x = X1, ymax = ub, ymin = lb ), alpha = 0.2)+
+    # ggplot()+
+    #   geom_point(data = df, aes_string(x = 'b5', y = 'depth.i'))+
+    #   geom_line(data = modData, aes(x = X1, y = pred), col = 'red', size = 1)+
+    #   geom_ribbon(data = modData, aes(x = X1, ymax = ub, ymin = lb ), alpha = 0.2)+
+    #   theme_bw()+
+    #   ggtitle(paste0(input$wland, " ", modname,
+    #                  "  (DD:", input$daydiff, "  UT:", input$Uthresh, 
+    #                  "  LT:", input$Lthresh,")"))+
+    #   theme(plot.title = element_text(size = 13, face = "bold", hjust = 0))+
+    #   xlab('shortwave infrared (Digital Number)')+
+    #   ylab('Depth (m)')
+    p <- ggplot()+
+      geom_point(data = df, aes_string(x = 'b5', y = 'depth.i', colour = shQuote("Data")))+
+      geom_line(data = modData, aes(x = X1, y = pred, colour = 'Model'), size = 1)+
+      geom_ribbon(data = modData, aes(x = X1, ymax = ub, ymin = lb), alpha = 0.2)+
       theme_bw()+
       ggtitle(paste0(input$wland, " ", modname,
-                     "  (DD:", input$daydiff, "  UT:", input$Uthresh, 
+                     "  (DD:", input$daydiff, "  UT:", input$Uthresh,
                      "  LT:", input$Lthresh,")"))+
+      scale_colour_manual(values = c("black", "red"),
+                          guide = guide_legend(override.aes = list(
+                            linetype = c(0, 1),
+                            shape = c(16, NA))),
+                          labels = c("Data", "Model"),
+                          name = "")+
       theme(plot.title = element_text(size = 13, face = "bold", hjust = 0))+
-      xlab('shortwave infrared (Digital Number)')+
+      xlab('shortwave infrared (B5 Digital Number)')+
       ylab('Depth (m)')
+    
+    p2 <- ggplotly(p)
+    
+    for(j in 1:length(p2$x$data[[1]]$text)){
+      out1 <- ": Data<br>b5"
+      in1 <- "<br>B5"
+      p2$x$data[[1]]$text[j] <- gsub(pattern = out1, 
+                                     replacement = in1, p2$x$data[[1]]$text[j])
+      out2 <- "depth.i"
+      in2 <- "Depth(m)"
+      p2$x$data[[1]]$text[j] <- gsub(pattern = out2, 
+                                     replacement = in2, p2$x$data[[1]]$text[j])
+    }
+    
+    for(k in 1:length(p2$x$data[[2]]$text)){
+      out1 <- "X1"
+      in1 <- "Model<br>B5"
+      p2$x$data[[2]]$text[k] <- gsub(pattern = out1, 
+                                     replacement = in1, p2$x$data[[2]]$text[k])
+      out2 <- "pred"
+      in2 <- "Prediction(m)"
+      p2$x$data[[2]]$text[k] <- gsub(pattern = out2, 
+                                     replacement = in2, p2$x$data[[2]]$text[k])
+      out3 <- "<br>Model: Model"
+      p2$x$data[[2]]$text[k] <- gsub(pattern = out3, 
+                                     replacement = "", p2$x$data[[2]]$text[k])
+    }
+    
+    p2
     
   }
   
-  output$mod <- renderPlot({
+  output$mod1 <- renderPlotly({
     
     #validation test and error message
     validate(
