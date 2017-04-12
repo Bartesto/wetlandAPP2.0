@@ -28,7 +28,6 @@ shinyUI(fluidPage(
                    choices = list("Log Model" = 1,
                                   "Linear Model (neg values zeroed)" = 2),
                    selected = 1),
-      downloadButton('downloadModPlot', 'Model Plot'),
       downloadButton('downloadData', 'Predictions Data'),
       br(),
       br(),
@@ -66,7 +65,8 @@ shinyUI(fluidPage(
     mainPanel(
       tabsetPanel(type = "tabs",
                   tabPanel("Modelling", 
-                           plotOutput("mod"),
+                           plotlyOutput("mod1"),
+                           br(),
                            tableOutput("modsum"),
                            br(),
                            br(),
