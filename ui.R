@@ -38,14 +38,16 @@ shinyUI(fluidPage(
                obtained from field visits. A choice of either logarithmic or linear 
                model is then used to model wetland depth and produce predicted depths."),
       h4("The Modelling Tab"),
-      helpText("There are two variables available for adjustment to improve model 
+      helpText("There are three variables available for adjustment to improve model 
                fit. 'Days difference' refers to the number of days allowed between
                a depth measurement in the field and available satellite data. 
-               'Error threshold (m)' refers to allowable measurement error from 
-               the field data. Adjusting these variables may improve the model 
-               fit which can be guaged by the plot and model summary table. When
-               happy with the model use the 'Download' button to access the data.
-               The plots can be downloaded as well by using the 'camera' icon when 
+               'Upper threshold (m)' and 'Lower threshold (m)' limit the range of 
+               depths available to model."),
+      helpText("Adjusting these variables may improve the model fit which can be 
+               guaged by the plot,model summary table and predictions plot. When 
+               happy with the model, the 'Download' button can be usedto access 
+               the data."),
+      helpText("The plots can be downloaded as well by using the 'camera' icon when 
                interacting with the plot. To be able to choose a download location 
                you might have to alter your browser settings."),
       h4("The Predictions Tab"),
@@ -53,7 +55,10 @@ shinyUI(fluidPage(
                this tab can help. By zooming all plots to a period of interest,
                the predicted hydroperiods can be examined in context with monthly 
                and annual rainfall. Rainfall measurements come from a monthly interpolated
-               dataset downloaded from the Australian Bureau of Meteorology"),
+               dataset produced by the Australian Bureau of Meteorology (BoM)"),
+      tags$div(class="header", checked=NA,
+               tags$p("The BoM data is available from "),
+               tags$a(href="shiny.rstudio.com/tutorial", "here"),
       br(),
       br(),
       br(),
@@ -79,7 +84,10 @@ shinyUI(fluidPage(
                            plotlyOutput("BoMmthly"),
                            actionButton("hide1", "Hide Monthly"),
                            plotlyOutput("BoMann"),
-                           actionButton("hide2", "Hide Annual"))
+                           actionButton("hide2", "Hide Annual")),
+                  tabPanel("Usage",
+                           h4("How do I use this?"),
+                           helpText())
                   )
     )
   )
