@@ -261,6 +261,10 @@ mychoices <- choices(b5)
 bnames <- names(b5)
 dnames <- names(hDepth)
 BoMnames <- names(BoM)
+# cull b5 to match depth records
+# id <- match(dnames, bnames)
+# id <- id[!is.na(id)]
+# b5 <- b5[,id]
 
 
 
