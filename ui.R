@@ -15,10 +15,6 @@ shinyUI(fluidPage(
       textOutput("numwlands"),
       selectInput("wland", "Wetland:",
                   choices = mychoices, selected = "ALB1"),
-      radioButtons("dtype", "Data Type:",
-                   choices = list("Standard" = 1,
-                                  "Include Continuous" = 2),
-                   selected = 1),
       helpText("Choose the number of days allowed between measured depth and 
                satellite data for the model"),
       numericInput("daydiff", "DD - Days Difference - default 10", value = 10),
@@ -32,37 +28,46 @@ shinyUI(fluidPage(
                    choices = list("Log Model" = 1,
                                   "Linear Model (neg values zeroed)" = 2),
                    selected = 1),
+      radioButtons("dtype", "Data Type:",
+                   choices = list("Standard" = 1,
+                                  "Include logger data if available" = 2),
+                   selected = 1),
       downloadButton('downloadData', 'Predictions Data'),
       br(),
       br(),
       h4("General Info"),
-      helpText("USGS Landsat shortwave infrared data has been extracted from the 
-               historical archive for each wetland available in the dropdown list 
-               above. These values are then matched with depth measurements 
-               obtained from field visits. A choice of either logarithmic or linear 
-               model is then used to model wetland depth and produce predicted depths."),
+      p("USGS Landsat shortwave infrared data has been extracted from the 
+        historical archive for each wetland available in the dropdown list 
+        above. These values are then matched with depth measurements 
+        obtained from field visits. A choice of either logarithmic or linear 
+        model is then used to model wetland depth and produce predicted depths."),
       h4("The Modelling Tab"),
-      helpText("There are three variables available for adjustment to improve model 
-               fit. 'Days difference' refers to the number of days allowed between
-               a depth measurement in the field and available satellite data. 
-               'Upper threshold (m)' and 'Lower threshold (m)' limit the range of 
-               depths available to model."),
-      helpText("Adjusting these variables may improve the model fit which can be 
-               guaged by the plot,model summary table and predictions plot. When 
-               happy with the model, the 'Download' button can be usedto access 
-               the data."),
-      helpText("The plots can be downloaded as well by using the 'camera' icon when 
-               interacting with the plot. To be able to choose a download location 
-               you might have to alter your browser settings."),
+      p("There are five variables available for adjustment to improve model fit."),
+      p(span(strong("Days difference"), style = "color:blue"), "refers to the 
+        number of days allowed between a depth measurement in the field and 
+        available satellite data."),
+      p(span(strong("Upper threshold"), style = "color:blue"),  "and",  
+        span(strong("Lower threshold"), style = "color:blue"), "limit the range 
+        of depths available to model."),
+      p(span(strong("Model Type"), style = "color:blue"),  "allows the choice 
+        between a logarithmic or linear model"),
+      p(span(strong("Data Type"), style = "color:blue"),  "allows the inclusion 
+        of logger data (continuous records) if they exist for a wetland"),
+      p("Adjusting these variables may improve the model fit which can be guaged 
+        by the plot, model summary table and predictions plot. When happy with the 
+        model, the 'Download' button can be used to access the data."),
+      p("The plots can be downloaded as well by using the 'camera' icon when 
+        interacting with the plot. To be able to choose a download location you 
+        might have to alter your browser settings."),
       h4("The Predictions Tab"),
-      helpText("If using the APP to estimate depths in the absence of field data,
-               this tab can help. By zooming all plots to a period of interest,
-               the predicted hydroperiods can be examined in context with monthly 
-               and annual rainfall. Rainfall measurements come from a monthly interpolated
-               dataset produced by the Australian Bureau of Meteorology (BoM)"),
+      p("If using the APP to estimate depths in the absence of field data, this 
+        tab can help. By zooming all plots to a period of interest, the predicted 
+        hydroperiods can be examined in context with monthly and annual rainfall. 
+        Rainfall measurements come from a monthly interpolated dataset produced 
+        by the Australian Bureau of Meteorology (BoM)"),
       tags$div(class="header", checked=NA,
                tags$p("The BoM data is available from "),
-               tags$a(href="shiny.rstudio.com/tutorial", "here")),
+               tags$a(href="http://www.bom.gov.au/jsp/awap/rain/archive.jsp?colour=colour&map=totals&period=month&area=nat", "here")),
       br(),
       br(),
       br(),
@@ -88,10 +93,7 @@ shinyUI(fluidPage(
                            plotlyOutput("BoMmthly"),
                            actionButton("hide1", "Hide Monthly"),
                            plotlyOutput("BoMann"),
-                           actionButton("hide2", "Hide Annual")),
-                  tabPanel("Usage",
-                           h4("How do I use this?"),
-                           helpText())
+                           actionButton("hide2", "Hide Annual"))
                   )
     )
   )
