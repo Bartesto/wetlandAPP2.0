@@ -15,6 +15,10 @@ shinyUI(fluidPage(
       textOutput("numwlands"),
       selectInput("wland", "Wetland:",
                   choices = mychoices, selected = "ALB1"),
+      radioButtons("dtype", "Data Type:",
+                   choices = list("Standard" = 1,
+                                  "Include Continuous" = 2),
+                   selected = 1),
       helpText("Choose the number of days allowed between measured depth and 
                satellite data for the model"),
       numericInput("daydiff", "DD - Days Difference - default 10", value = 10),
