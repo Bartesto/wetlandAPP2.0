@@ -57,6 +57,11 @@ df2model <- function(x, y, u, z){
   
   #index to closest match between hDepth and b5
   ind <- sapply(tomatch, function(x) which.min(abs(datelist-x)))
+  if(length(ind) == 0){
+    ind <- 0
+  } else {
+    ind <- ind
+  }
   
   #subset band 5 values according to closest match up
   b5M <- b5[ind,]
