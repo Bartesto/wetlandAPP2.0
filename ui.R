@@ -58,7 +58,7 @@ shinyUI(fluidPage(
                dataset produced by the Australian Bureau of Meteorology (BoM)"),
       tags$div(class="header", checked=NA,
                tags$p("The BoM data is available from "),
-               tags$a(href="shiny.rstudio.com/tutorial", "here"),
+               tags$a(href="shiny.rstudio.com/tutorial", "here")),
       br(),
       br(),
       br(),
