@@ -12,7 +12,7 @@ shinyServer(function(input, output) {
   
   #Reactive data frame to test if enough data to model
   df <- reactive({
-    df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
+    df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh, input$dtype)
     
   })
   output$numwlands <- renderText({
@@ -97,7 +97,7 @@ shinyServer(function(input, output) {
     )
     
     #make table
-    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh, input$dtype)
     model <- mod(df, input$mod)
     tabdf <- glance(model)
     tabdf$n <- tabdf$df + tabdf$df.residual
@@ -105,9 +105,9 @@ shinyServer(function(input, output) {
   
   #Predictions Plot for both tabs - sep ids below
   predPlotInput <- function(){
-    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh, input$dtype)
     model <- mod(df, input$mod)
-    hDepth.i <- dfpredhist(input$wland)
+    hDepth.i <- dfpredhist(input$wland, input$dtype)
     b5.i <- dfpredb5(input$wland)
     b5modelled <- pData(b5.i, model, input$mod)
     modname <- ifelse(input$mod == 1, "log-model", "linear-model")
@@ -185,7 +185,8 @@ shinyServer(function(input, output) {
     
     #validation test and error message
     validate(
-      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model"),
+      need(length(df()[,1]) != 0, "Sorry historical data points pre-date satellite data")
     )
     
     #predictions plot
@@ -313,16 +314,16 @@ shinyServer(function(input, output) {
   
   #Data for export
   datasetInput1 <- function(){
-    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh, input$dtype)
     model <- mod(df, input$mod)
     head <- csvHead(model, input$daydiff, input$Uthresh, input$Lthresh)
     return(head)
   }
   
   datasetInput2 <- function(){
-    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh)
+    df <- df2model(input$wland, input$daydiff, input$Uthresh, input$Lthresh, input$dtype)
     model <- mod(df, input$mod)
-    hDepth.i <- dfpredhist(input$wland)
+    hDepth.i <- dfpredhist(input$wland, input$dtype)
     b5.i <- dfpredb5(input$wland)
     b5modelled <- pData(b5.i, model, input$mod)
     return(b5modelled)
