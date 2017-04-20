@@ -79,7 +79,8 @@ shinyServer(function(input, output) {
     
     #validation test and error message
     validate(
-      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model"),
+      need(length(df()[,1]) != 0, "Sorry historical data points pre-date satellite data")
     )
     #model plot
     modPlotInput()
@@ -91,7 +92,8 @@ shinyServer(function(input, output) {
     
     #validation test and error message
     validate(
-      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model"),
+      need(length(df()[,1]) != 0, "Sorry historical data points pre-date satellite data")
     )
     
     #make table
@@ -170,7 +172,8 @@ shinyServer(function(input, output) {
     
     #validation test and error message
     validate(
-      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model")
+      need(length(df()[,1]) > 4, "Sorry not enough historical data points to model"),
+      need(length(df()[,1]) != 0, "Sorry historical data points pre-date satellite data")
     )
     
     #predictions plot
