@@ -9,6 +9,7 @@ shinyUI(fluidPage(
   #theme = shinytheme("paper"),
   useShinyjs(),
   titlePanel("SWWMP Modeller"),
+  h6("version 2.0"),
   sidebarLayout(
     sidebarPanel(
       h3("Model a wetland's depth using USGS Landsat shortwave infrared data"),
