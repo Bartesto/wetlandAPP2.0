@@ -34,14 +34,18 @@ choices <- function(x){
 }
 
 # Function to create index for closest dates and return a df
-df2model <- function(x, y, u, z){
-  
+df2model <- function(x, y, u, z, a){
+  if(a == 1){
+    Depth <- hDepth
+  } else{
+    Depth <- cDepth
+  }
   #specific data to wetland
   id5 <- match(x, bnames)#find b5 data
   b5 <- b5[,c(1,id5)]
   b5 <- b5[complete.cases(b5),]
   idh <- match(x, dnames)#find hdepth data
-  hist <- hDepth[,c(1,idh)]
+  hist <- Depth[,c(1,idh)]
   hist <- hist[complete.cases(hist),]
   
   #trim hist data set
@@ -89,9 +93,14 @@ df2model <- function(x, y, u, z){
 }
 
 # Function to create wetland specific depth df (used in pred plot)
-dfpredhist <- function(x){
+dfpredhist <- function(x, a){
+  if(a == 1){
+    Depth <- hDepth
+  } else{
+    Depth <- cDepth
+  }
   idh <- match(x, dnames)#find hdepth data
-  hist <- hDepth[,c(1,idh)]
+  hist <- Depth[,c(1,idh)]
   hist <- hist[complete.cases(hist),]
   names(hist) <- c("DATE", "value")
   return(hist)
@@ -257,8 +266,10 @@ csvHead <- function(mod, dd, ut, et){
 # Create global data sets
 b5 <- csvImport(list.files(path = "./data", pattern = "^dfb5*", 
                              full.names = TRUE))
-hDepth <- csvImport(list.files(path = "./data", pattern = "^dfhist*", 
+hDepth <- csvImport(list.files(path = "./data", pattern = "^dfhist_as*", 
                                 full.names = TRUE))
+cDepth <- csvImport(list.files(path = "./data", pattern = "^dfhist_inc*", 
+                               full.names = TRUE))
 BoM <- csvImport(list.files(path = "./data", pattern = "^BoM*", 
                             full.names = TRUE))
 
