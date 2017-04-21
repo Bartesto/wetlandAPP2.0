@@ -1,0 +1,73 @@
+---
+title: "SWWMP Modeller version 2 User Guide"
+author: "Bart Huntley"
+date: "20 April 2017"
+output: html_document
+---
+
+
+###Intro
+Welcome to the new SWWMP modelling app (version 2.0)! The first version of the app has been road tested and this new version incorporates new functionality as suggested from feedback.
+
+![](main_screen.PNG)
+
+###What's new?
+####Major Updates:
+
+1. Prediction graphs now have different line types connecting points reflecting temporal differences:
+    + Solid for points < 60 days apart
+    + Dashed for points > 60 and < 70 days apart
+    + Dotted for points > 70 and < 80 days apart
+    + No line for points > 80 days apart
+2. Bar charts showing rainfall obtained from interpolated data available from the [BoM](http://www.bom.gov.au/jsp/awap/rain/archive.jsp?colour=colour&map=totals&period=month&area=nat). There are two bar charts showing calendar years and monthly rainfall and they are wetland specific.
+3. All graphs have been recreated using D3.js (plotly package) and are now fully interactive allowing:
+    + Data to be seen on 'hover'
+    + Zoom-ability
+    + Multi-format date information (i.e. ddmmyyyy and Julian)
+    + Independent download (at the zoom level)
+    + Data points/lines to be turned on and off from the legend
+4. Addition of a selectable upper threshold to limit modelling data to a suitable range of depths for short wave infrared modelling. This joins the selectable lower threshold already in the app.
+5. There is now a separate tab that shows the prediction depth graph with the rainfall data so that they can be analysed together. Toggle switches allow the BoM graphs to be hidden to aid interpretability.
+6. Ability to 'add' in continuous data records from wetlands that have had automated loggers.
+7. The app will fail 'gracefully' when depth data is unavailable due to too few data points or when field sampling ended before available satellite data.
+
+####Minor Updates:
+
+* Other small changes include:
+    + A dynamic 'n' value in the model table
+    + Total number of predicted depths
+    + Default values shown for variables
+    + Increased the size of some plotting symbols
+    + The app now opens on a wetland with data and hence creates plots when starting
+    + There is a live link to the BoM data
+
+###Interacting with the Menu
+####Follow the numbers: 
+
+![](menus_nums.png)
+
+1. Choose a **Wetland** from the four letter unique wetland code.
+2. Choose the **Days Difference** which represents the number of days allowed between a depth measurement in the field and available satellite data.
+3. Choose the **Upper threshold**. Sensitivity in shortwave infrared decreases with greater depth. Adjusting this parameter removes depth readings exceeding the set threshold. This may improve model fit by allowing the model to work with data more sensitive to depth change.
+4. Choose the **Lower threshold**. In some instances there are a great number of zero depth readings which has the effect of skewing the model. Removing the very lowest depth values can aid the fit by focusing the model on the data where variation exists.
+5. Choose a **Model Type**, logarithmic or linear.
+6. Choose a **Data Type**. Standard, refers to depth data exclusively from field visits. Including logger data adds in the daily depth recordings from wetlands that had automated readings. Including the logger data can dramatically increase the depth data available when worked in conjunction with step 2 above. For example, a days difference of 10 can add 20 depths to be modeled with one paired satellite observation. This is not seen to be a problem as the line of best fit essentially averages those depths.
+7. Clicking on this button will download the predictions data (predicted depths and model parameters).
+
+###Interacting with a graph
+
+![](graph2.png)
+
+1. Model parameters/variables are shown in the graph title.
+2. The graph menu bar appears only when you hover over it with your cursor. Icons are explained on hover. The camera icon downloads the plot at whatever zoom or selection you have made.
+3. You can interact with the legend by turning items on and off by clicking on them.
+4. Hover over any data point on the graph and it will provide information pertinent to the data you are looking at. All graphs operate this way so for example the BoM graphs can be queried for rainfall amounts and the model graph can be queried for shortwave infrared values.
+
+###Known Issues/Omissions
+There are a couple of small wrinkles.
+
+1. If you have been looking at a wetland where there was data and the plots were generated and then select another wetland where there are too few records to model or field measurements ended before the availability of satellite data, the app will display empty versions of the previous graphs along with informative error messages. The error messages explain what's going on but I can't for the life of me 'delete' the skeleton of the previous graph. At this stage I am not actively looking for a fix for this but if I come up with one I will update the app.
+2. The app now has a lot more 'thinking' to do and as such there is a little more latency between selecting something and seeing a result. When first opening the Predictions Tab there is a noticeable lag whilst the rainfall graphs are drawn. However once they are generated, there should be no lag when flicking between the Tabs. The app 'dims' slightly when having a think.
+3. A requested addition that was not implemented was a quantification of the changing proportion of cloud free scenes available to the model per wetland. The reason this has not been implemented is two-fold:
+    + Not every scene was downloaded for every available date. When ordering scenes it is possible to skip ones that are completely cloud covered. This saves time and resources. That's not to say we don't have very cloudy images in our archive but what we do have is not necessarily a true representation of all available imagery. Therefore a proportion could be meaningless and inaccurate.
+    + To do this properly a 'live' count of data would be required and this was out of the scope of this update. A feel for how cloud affected certain wetlands might be, can be gained from the 'Number of predicted depths...' metric displayed underneath the predictions graph on the Modelling Tab. This number represents the clear scenes for the period and this number increases the further north the wetland is relative to the south coast.
