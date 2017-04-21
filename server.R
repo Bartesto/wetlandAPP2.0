@@ -16,7 +16,7 @@ shinyServer(function(input, output) {
     
   })
   output$numwlands <- renderText({
-    paste0("Choose one of  ", length(mychoices), " wetlands.")
+    paste0("Choose one of  ", length(dnames), " wetlands.")
   })
   
   #Model Plot
