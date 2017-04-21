@@ -13,7 +13,7 @@ shinyUI(fluidPage(
   sidebarLayout(
     sidebarPanel(
       h3("Model a wetland's depth using USGS Landsat shortwave infrared data"),
-      textOutput("numwlands"),
+      helpText("Choose a wetland."),
       selectInput("wland", "Wetland:",
                   choices = mychoices, selected = "ALB1"),
       helpText("Choose the number of days allowed between measured depth and 
