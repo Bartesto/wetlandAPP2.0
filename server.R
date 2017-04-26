@@ -6,6 +6,7 @@ library(broom)
 library(plotly)
 
 source("global.R")
+pdf(NULL)
 
 # Define server logic for app
 shinyServer(function(input, output) {
