@@ -203,7 +203,7 @@ shinyServer(function(input, output) {
     p <- ggplot(Bdfmthly)+
       geom_bar(aes(x = DATE, y = mm, fill = "Interpolated"), stat = "identity")+
       scale_x_date(date_breaks = "1 year", date_labels = "%Y",
-                   limits = as.Date(c("1987-01-01", "2017-01-01")),
+                   #limits = as.Date(c("1987-01-01", "2017-01-01")),
                    expand=c(0.007,1)) +
       scale_fill_manual(values = "#006699", name = "")+
       theme_bw() +
